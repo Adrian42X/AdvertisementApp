@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdvertisementDB.Model
 {
-    public class User : DbContext
+    public class User
     {
         public int Id { get; set; }
         public string Name { get; set; }
