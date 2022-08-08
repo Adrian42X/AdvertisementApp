@@ -20,6 +20,8 @@ namespace AdvertisementApp
             Console.WriteLine("2 -> Modify add");
             Console.WriteLine("3 -> Delete add");
             Console.WriteLine("4 -> Show all adds");
+            Console.WriteLine("5-> Add Review");
+            Console.WriteLine("0 -> EXIT");
         }
         static void Login()
         {
@@ -61,6 +63,31 @@ namespace AdvertisementApp
             dbContext.SaveChanges();
         }
 
+        static void NewReview()
+        {
+            var dbContext = new TodoDbContext();
+
+            Console.WriteLine("Add ID:");
+            int id = int.Parse(Console.ReadLine());
+
+            Advertisement add = dbContext.Advertisements.Include(u => u.Reviews).SingleOrDefault(u=>u.Id==id);
+
+            Console.WriteLine("Give stars nr :");
+            float starsnr = float.Parse(Console.ReadLine());
+
+            Console.WriteLine("Title:");
+            string title=Console.ReadLine();
+
+            Console.WriteLine("Description: ");
+            string description = Console.ReadLine();
+
+            Review review = new Review { AdvertisementId = id, Description = description, Stars = starsnr, Title = title };
+
+            add.Reviews.Add(review);
+
+            dbContext.SaveChanges();
+        }
+
         static void ModifyAdd()
         {
             var dbContext = new TodoDbContext();
@@ -79,7 +106,7 @@ namespace AdvertisementApp
                     add.Title=title;
 
                 Console.WriteLine("New Price: ");
-                int price=int.Parse(Console.ReadLine());
+                float price=float.Parse(Console.ReadLine());
                 if (price != null)
                     add.price = price;
 
@@ -123,6 +150,16 @@ namespace AdvertisementApp
                 Console.WriteLine("Advertisement ID : " + add.Id.ToString());
                 Console.WriteLine(add.Title.ToString()+" Price: "+add.price.ToString());
                 Console.WriteLine(add.Description.ToString());
+                Console.WriteLine("Reviews :");
+
+                if(add.Reviews!=null)
+                foreach(var review in add.Reviews)
+                {
+                    Console.WriteLine(review.Stars.ToString());
+                    Console.WriteLine(review.Title);
+                    Console.WriteLine(review.Description);
+                    Console.WriteLine();
+                }
             }
         }
 
@@ -142,6 +179,9 @@ namespace AdvertisementApp
                         break;
                     case 4:
                         ShowAdds();
+                        break;
+                    case 5:
+                        NewReview();
                         break;
                 }
         }

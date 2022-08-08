@@ -19,5 +19,6 @@ namespace AdvertisementDB.Model
 
         public DbSet<User> Users { get; set; }
         public DbSet<Advertisement> Advertisements { get; set; }
+        public DbSet<Review> Reviews { get; set; }
     }
 }
