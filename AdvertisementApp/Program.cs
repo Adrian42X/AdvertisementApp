@@ -70,7 +70,7 @@ namespace AdvertisementApp
             Console.WriteLine("Add ID:");
             int id = int.Parse(Console.ReadLine());
 
-            Advertisement add = dbContext.Advertisements.Include(u => u.Reviews).SingleOrDefault(u=>u.Id==id);
+            Advertisement add = dbContext.Advertisements.SingleOrDefault(u=>u.Id==id);
 
             Console.WriteLine("Give stars nr :");
             float starsnr = float.Parse(Console.ReadLine());
@@ -81,9 +81,9 @@ namespace AdvertisementApp
             Console.WriteLine("Description: ");
             string description = Console.ReadLine();
 
-            Review review = new Review { AdvertisementId = id, Description = description, Stars = starsnr, Title = title };
+            Review review = new Review { AdvertisementId = id, Description = description, Stars = starsnr, Title = title, DateTime=DateTime.Now };
 
-            add.Reviews.Add(review);
+            dbContext.Reviews.Add(review);
 
             dbContext.SaveChanges();
         }
@@ -142,7 +142,7 @@ namespace AdvertisementApp
         static void ShowAdds()
         {
             var dbContext= new TodoDbContext();
-            User user = dbContext.Users.Include(u=>u.Advertisements).SingleOrDefault(u=>u.Id==_userId);
+            User user = dbContext.Users.Include(u=>u.Advertisements).ThenInclude(u=>u.Reviews).SingleOrDefault(u=>u.Id==_userId);
             Console.WriteLine("Your Adds");
 
             foreach (var add in user.Advertisements)
@@ -150,12 +150,13 @@ namespace AdvertisementApp
                 Console.WriteLine("Advertisement ID : " + add.Id.ToString());
                 Console.WriteLine(add.Title.ToString()+" Price: "+add.price.ToString());
                 Console.WriteLine(add.Description.ToString());
+                Console.WriteLine();
                 Console.WriteLine("Reviews :");
 
-                if(add.Reviews!=null)
                 foreach(var review in add.Reviews)
                 {
-                    Console.WriteLine(review.Stars.ToString());
+                    Console.WriteLine("Date: "+review.DateTime);
+                    Console.WriteLine("Stars: "+review.Stars.ToString());
                     Console.WriteLine(review.Title);
                     Console.WriteLine(review.Description);
                     Console.WriteLine();
